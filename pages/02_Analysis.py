@@ -98,7 +98,7 @@ def render_analysis():
     )
 
     # Overall Performance Analysis
-    st.subheader(f"Overall Performance Analysis ({frequency})")
+    st.subheader(f"Overall Performance Analysis ")
     
     # Calculate metrics for each time period
     period_metrics = []
