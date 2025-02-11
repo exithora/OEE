@@ -41,7 +41,8 @@ def main():
     # Main app content
     if user['role'] == 'guest':
         # For guest users, only show help page
-        from pages.03_Help import render_help
+        import pages.03_Help as help_page
+        help_page.render_help()
         render_help()
     else:
         # Admin sees full app
