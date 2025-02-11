@@ -100,8 +100,22 @@ def render_analysis():
     # Overall Performance Analysis
     st.subheader(f"Overall Performance Analysis ({frequency})")
     
-    # Use resampled data for metrics
-    metrics = calculate_oee(resampled_df)
+    # Calculate metrics for each time period
+    period_metrics = []
+    for _, period_data in resampled_df.iterrows():
+        period_metric = calculate_oee(pd.DataFrame([period_data]))
+        period_metric['timestamp'] = period_data['timestamp']
+        period_metrics.append(period_metric)
+    
+    period_df = pd.DataFrame(period_metrics)
+    
+    # Calculate average metrics for the selected frequency
+    avg_metrics = {
+        'availability': period_df['availability'].mean(),
+        'performance': period_df['performance'].mean(),
+        'quality': period_df['quality'].mean(),
+        'oee': period_df['oee'].mean()
+    }
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -111,8 +125,20 @@ def render_analysis():
         st.metric("Total Runtime", f"{resampled_df['runtime'].sum():,.0f} mins")
         st.metric("Planned Time", f"{resampled_df['planned_time'].sum():,.0f} mins")
     with col3:
-        st.metric("Scrap Rate", f"{(1 - metrics['quality']/100):.1%}")
+        st.metric("Scrap Rate", f"{(1 - avg_metrics['quality']/100):.1%}")
         st.metric("Average Cycle Time", f"{resampled_df['ideal_cycle_time'].mean():.2f} mins")
+    
+    # Display OEE metrics
+    st.subheader(f"Average OEE Metrics ({frequency})")
+    oee_col1, oee_col2, oee_col3, oee_col4 = st.columns(4)
+    with oee_col1:
+        st.metric("Availability", f"{avg_metrics['availability']:.1f}%")
+    with oee_col2:
+        st.metric("Performance", f"{avg_metrics['performance']:.1f}%")
+    with oee_col3:
+        st.metric("Quality", f"{avg_metrics['quality']:.1f}%")
+    with oee_col4:
+        st.metric("OEE", f"{avg_metrics['oee']:.1f}%")
 
 if __name__ == "__main__":
     render_analysis()
