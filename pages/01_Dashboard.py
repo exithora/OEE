@@ -112,11 +112,29 @@ def render_dashboard():
 
     st.plotly_chart(fig_gauge)
 
-    # Hourly trends
+    # Time-based trends
     col1, col2 = st.columns(2)
 
+    # Group data by selected frequency
+    freq_df = filtered_df.set_index('timestamp').resample(selected_freq).agg({
+        'runtime': 'sum',
+        'planned_time': 'sum',
+        'total_pieces': 'sum',
+        'good_pieces': 'sum',
+        'ideal_cycle_time': 'mean'
+    }).reset_index()
+
+    # Calculate OEE metrics for each period
+    metrics_over_time = []
+    for _, period_data in freq_df.iterrows():
+        metrics = calculate_oee(pd.DataFrame([period_data]))
+        metrics['timestamp'] = period_data['timestamp']
+        metrics_over_time.append(metrics)
+    
+    metrics_df = pd.DataFrame(metrics_over_time)
+
     with col1:
-        fig_trend = px.line(hourly_metrics, x='hour', y=['availability', 'performance', 'quality'],
+        fig_trend = px.line(metrics_df, x='timestamp', y=['availability', 'performance', 'quality'],
                            title=f"{frequency} OEE Components Trend")
         if st.session_state.enable_realtime:
             fig_trend.add_annotation(
@@ -129,7 +147,7 @@ def render_dashboard():
         st.plotly_chart(fig_trend)
 
     with col2:
-        fig_oee = px.line(hourly_metrics, x='hour', y='oee',
+        fig_oee = px.line(metrics_df, x='timestamp', y='oee',
                          title=f"{frequency} OEE Trend")
         if st.session_state.enable_realtime:
             fig_oee.add_annotation(

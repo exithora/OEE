@@ -24,6 +24,29 @@ def render_analysis():
         st.rerun()
 
     df = st.session_state['data']
+    
+    # Time frequency selector
+    frequency = st.sidebar.selectbox(
+        "Select Time Frequency",
+        options=['Daily', 'Weekly', 'Monthly', 'Yearly'],
+        index=0
+    )
+
+    # Convert frequency selection to pandas frequency string
+    freq_map = {'Daily': 'D', 'Weekly': 'W', 'Monthly': 'M', 'Yearly': 'Y'}
+    selected_freq = freq_map[frequency]
+
+    # Resample data based on selected frequency
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    resampled_df = df.set_index('timestamp').resample(selected_freq).agg({
+        'runtime': 'sum',
+        'planned_time': 'sum',
+        'total_pieces': 'sum',
+        'good_pieces': 'sum',
+        'ideal_cycle_time': 'mean',
+        'part_number': 'first',
+        'line_number': 'first'
+    }).reset_index()
 
     # Part and Line Analysis
     st.subheader("Part and Line Performance")
