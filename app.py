@@ -41,9 +41,8 @@ def main():
     # Main app content
     if user['role'] == 'guest':
         # For guest users, only show help page
-        import pages.03_Help as help_page
-        help_page.render_help()
-        render_help()
+        from pages import Help
+        Help.render_help()
     else:
         # Admin sees full app
         st.title("OEE Calculator and Analyzer")
