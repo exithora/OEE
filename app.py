@@ -50,6 +50,16 @@ def main():
         # Admin sees full app
         st.title("OEE Calculator and Analyzer")
         st.write("Upload your production data to calculate and analyze OEE metrics")
+        
+        # File upload section
+        uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+        if uploaded_file is not None:
+            from utils.data_processor import process_csv_file
+            df = process_csv_file(uploaded_file)
+            if df is not None:
+                st.session_state['data'] = df
+                st.success("Data uploaded successfully!")
+                st.write("Go to the Dashboard page to view analytics.")
 
 if __name__ == "__main__":
     main()
