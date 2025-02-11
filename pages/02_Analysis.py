@@ -98,19 +98,21 @@ def render_analysis():
     )
 
     # Overall Performance Analysis
-    st.subheader("Overall Performance Analysis")
-    metrics = calculate_oee(df)
-
+    st.subheader(f"Overall Performance Analysis ({frequency})")
+    
+    # Use resampled data for metrics
+    metrics = calculate_oee(resampled_df)
+    
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("Total Parts Produced", f"{df['total_pieces'].sum():,.0f}")
-        st.metric("Good Parts", f"{df['good_pieces'].sum():,.0f}")
+        st.metric("Total Parts Produced", f"{resampled_df['total_pieces'].sum():,.0f}")
+        st.metric("Good Parts", f"{resampled_df['good_pieces'].sum():,.0f}")
     with col2:
-        st.metric("Total Runtime", f"{df['runtime'].sum():,.0f} mins")
-        st.metric("Planned Time", f"{df['planned_time'].sum():,.0f} mins")
+        st.metric("Total Runtime", f"{resampled_df['runtime'].sum():,.0f} mins")
+        st.metric("Planned Time", f"{resampled_df['planned_time'].sum():,.0f} mins")
     with col3:
         st.metric("Scrap Rate", f"{(1 - metrics['quality']/100):.1%}")
-        st.metric("Average Cycle Time", f"{df['ideal_cycle_time'].mean():.2f} mins")
+        st.metric("Average Cycle Time", f"{resampled_df['ideal_cycle_time'].mean():.2f} mins")
 
 if __name__ == "__main__":
     render_analysis()
