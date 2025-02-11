@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
-from utils.oee_calculator import calculate_hourly_oee
+from utils.oee_calculator import calculate_hourly_oee, calculate_oee
 from utils.data_processor import filter_data_by_date
 import pandas as pd
 from datetime import datetime, timedelta
