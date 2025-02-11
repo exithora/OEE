@@ -5,6 +5,9 @@ from utils.data_processor import create_template_csv
 from datetime import datetime
 import pandas as pd
 
+# Set page config first
+st.set_page_config(page_title="OEE Calculator", page_icon="📊")
+
 def main():
     # Initialize authentication
     init_auth()
@@ -47,7 +50,6 @@ def main():
         # Admin sees full app
         st.title("OEE Calculator and Analyzer")
         st.write("Upload your production data to calculate and analyze OEE metrics")
-        # Rest of your main app content here
 
 if __name__ == "__main__":
     main()

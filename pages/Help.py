@@ -3,8 +3,6 @@ import streamlit as st
 from utils.data_processor import create_template_csv
 import io
 
-st.set_page_config(page_title="OEE Help", page_icon="❓")
-
 def render_help():
     st.title("OEE Calculator Help")
 
